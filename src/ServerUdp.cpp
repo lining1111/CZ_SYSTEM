@@ -190,8 +190,18 @@ void ServerUdp::ThreadProcessRecv(void *p) {
             ServerUdp::Msg msg = server->queue_recv.front();
             server->queue_recv.pop();
 
+            //将buf内容以16进制形式打印出来
+            string buf_str;
+            buf_str.clear();
+            for (int i = 0; i < msg.len; i++) {
+                char tmp[4];
+                bzero(tmp, sizeof(tmp));
+                sprintf(tmp, "%02x ", msg.buf[i]);
+                buf_str.append(tmp);
+            }
+
             //这是一个单纯打印接收的流程，可以根据实际(比如json中code，来进行区分)
-            cout << "recv client info,len:" << msg.len << ",info:" << msg.buf << endl;
+            cout << "recv client info,len:" << msg.len << ",info:" << buf_str << endl;
             //回环 heartbeat opened loop must close
             bool enableLoop = false;
             if (enableLoop) {
@@ -201,7 +211,7 @@ void ServerUdp::ThreadProcessRecv(void *p) {
 
             //获取数据，依次处理
             if (server->UserProcessRecv) {
-                server->UserProcessRecv(msg, server->pUser);
+                server->UserProcessRecv(*server, msg, server->pUser);
             }
 
         }
@@ -230,6 +240,16 @@ void ServerUdp::ThreadProcessSend(void *p) {
             msg = server->queue_send.front();
             server->queue_send.pop();
 
+            //将buf内容以16进制形式打印出来
+            string buf_str;
+            buf_str.clear();
+            for (int i = 0; i < msg.len; i++) {
+                char tmp[4];
+                bzero(tmp, sizeof(tmp));
+                sprintf(tmp, "%02x ", msg.buf[i]);
+                buf_str.append(tmp);
+            }
+
             socklen_t cli_len = sizeof(struct sockaddr_in);
             //服务端发送数据，要把数据发送给正确的客户端
             int ret = sendto(server->listen_sock, msg.buf, msg.len, 0, (struct sockaddr *) &msg.client_addr, cli_len);
@@ -237,10 +257,10 @@ void ServerUdp::ThreadProcessSend(void *p) {
                 if (errno == EINTR || errno == EWOULDBLOCK || errno == EAGAIN) {
                     continue;
                 }
-                cout << "msg:" << msg.buf << ",send fail,errno:" << to_string((errno)) << ",client:"
+                cout << "msg:" << buf_str << ",send fail,errno:" << to_string((errno)) << ",client:"
                      << inet_ntoa(msg.client_addr.sin_addr) << endl;
             } else {
-                cout << "msg:" << msg.buf << ",send ok" << ",client:"
+                cout << "msg:" << buf_str << ",send ok" << ",client:"
                      << inet_ntoa(msg.client_addr.sin_addr) << endl;
             }
         }
@@ -250,7 +270,7 @@ void ServerUdp::ThreadProcessSend(void *p) {
 }
 
 int ServerUdp::Send(ServerUdp::Msg msg) {
-    if (msg.len <= 0 ) {
+    if (msg.len <= 0) {
         return -1;
     }
     //try lock_send

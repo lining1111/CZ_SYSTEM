@@ -5,7 +5,7 @@
 #ifndef _MAINCONTROLBOARD_H
 #define _MAINCONTROLBOARD_H
 
-#include "ServerUdp.h"
+#include "ClientUdp.h"
 
 //zhu kong ban
 
@@ -14,7 +14,7 @@ public:
     int cnt = 0;
 
 public:
-    static void ProcessRecv(ServerUdp::Msg msg, void *pUser);
+    static void ProcessRecv(ClientUdp::Msg msg, void *pUser);
 };
 
 

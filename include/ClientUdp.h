@@ -22,8 +22,8 @@ class ClientUdp {
 public:
 
     struct Msg {
-        char buf[1024 * 512];
-        int len = 0;
+        uint8_t buf[1024 * 512];
+        uint32_t len = 0;
     };
 
 public:

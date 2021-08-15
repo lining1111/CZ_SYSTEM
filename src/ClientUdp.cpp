@@ -173,9 +173,19 @@ void ClientUdp::ThreadProcessRecv(void *p) {
             //record receive time
             gettimeofday(&client->receive_time, nullptr);
 
+            //将buf内容以16进制形式打印出来
+            string buf_str;
+            buf_str.clear();
+            for (int i = 0; i < msg.len; i++) {
+                char tmp[4];
+                bzero(tmp, sizeof(tmp));
+                sprintf(tmp,"%02x ",msg.buf[i]);
+                buf_str.append(tmp);
+            }
+
 
             //这是一个单纯打印接收的流程，可以根据实际(比如json中code，来进行区分)
-            cout << "recv client info,len:" << msg.len << ",info:" << msg.buf << endl;
+            cout << "recv client info,len:" << msg.len << ",msg:" << buf_str << endl;
             //回环 heartbeat opened loop must close
             bool enableLoop = false;
             if (enableLoop) {
@@ -213,13 +223,24 @@ void ClientUdp::ThreadProcessSend(void *p) {
             Msg msg = client->queue_send.front();
             client->queue_send.pop();
 
+            //将buf内容以16进制形式打印出来
+            string buf_str;
+            buf_str.clear();
+            for (int i = 0; i < msg.len; i++) {
+                char tmp[4];
+                bzero(tmp, sizeof(tmp));
+                sprintf(tmp,"%02x ",msg.buf[i]);
+                buf_str.append(tmp);
+            }
+
+
             int ret = sendto(client->sockfd, msg.buf, msg.len, 0, (struct sockaddr *) &client->server_addr,
                              client->len);
             if (ret != msg.len) {
                 if (errno == EINTR || errno == EWOULDBLOCK || errno == EAGAIN) {
                     continue;
                 }
-                cout << "msg:" << msg.buf << "send fail,errno:" << to_string((errno)) << endl;
+                cout << "msg:" << buf_str<< "send fail,errno:" << to_string((errno)) << endl;
                 close(client->sockfd);
                 timeval tv_now;
                 gettimeofday(&tv_now, nullptr);
@@ -227,7 +248,7 @@ void ClientUdp::ThreadProcessSend(void *p) {
                      << endl;
                 client->isRun = false;
             } else {
-                cout << "msg:" << msg.buf << "send ok" << endl;
+                cout << "msg:" << buf_str << "send ok" << endl;
             }
         }
         pthread_mutex_unlock(&client->lock_send);

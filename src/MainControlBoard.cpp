@@ -8,14 +8,16 @@
 using namespace std;
 
 
-void MainControlBoard::ProcessRecv(ServerUdp::Msg msg, void *pUser) {
+void MainControlBoard::ProcessRecv(ClientUdp::Msg msg, void *pUser) {
 
     if (pUser == nullptr) {
         return;
     }
 
     auto mainControlBoard = (MainControlBoard *) pUser;
-    cout << "msg:" << msg.buf << endl;
+    cout << "msg recv" << endl;
     mainControlBoard->cnt++;
+
+    //解析收到结果
 
 }

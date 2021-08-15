@@ -16,8 +16,8 @@ using namespace std;
 class ServerUdp {
 public:
     struct Msg {
-        unsigned char buf[1024 * 512];
-        int len = 0;
+        uint8_t buf[1024 * 512];
+        uint32_t len = 0;
         struct sockaddr_in client_addr;
     };
 public:
@@ -48,7 +48,7 @@ public:
 
 public:
     //processRecv
-    typedef void (*ProcessRecv)(Msg msg,void *user);
+    typedef void (*ProcessRecv)(ServerUdp &server,Msg msg,void *user);
 
     ProcessRecv UserProcessRecv;
     void *pUser;
