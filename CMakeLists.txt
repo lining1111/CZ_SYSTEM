@@ -6,8 +6,6 @@ set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
 set(CMAKE_AUTOUIC ON)
 
-#set(CMAKE_PREFIX_PATH "/home/lining/Qt5.10.0/5.10.0/gcc_64")
-
 #根据实际情况设置
 #set(ARCH arm)
 set(ARCH x86)
@@ -21,7 +19,7 @@ if (${ARCH} STREQUAL arm)
     set(CMAKE_C_COMPILER_RANLIB ${CROSS_COMPILE}ranlib)
     set(CMAKE_CXX_COMPILER ${CROSS_COMPILE}g++)
 
-    set(CMAKE_PREFIX_PATH /home/lining/Qt5.10.0/5.10.0/rpi_32/lib/cmake)
+    set(CMAKE_PREFIX_PATH "/home/lining/Qt5.10.0/5.10.0/rpi_32")
 
 endif ()
 
@@ -33,11 +31,11 @@ if (${ARCH} STREQUAL arm64)
     set(CMAKE_C_COMPILER_RANLIB ${CROSS_COMPILE}ranlib)
     set(CMAKE_CXX_COMPILER ${CROSS_COMPILE}g++)
 
-    set(CMAKE_PREFIX_PATH /home/lining/Qt5.10.0/5.5.1/arm64/lib/cmake)
+    set(CMAKE_PREFIX_PATH "/home/lining/Qt5.10.0/5.5.1/arm64")
 endif ()
 
 if (${ARCH} STREQUAL x86)
-    set(CMAKE_PREFIX_PATH /home/lining/Qt5.10.0/5.10.0/gcc_64/lib/cmake)
+    set(CMAKE_PREFIX_PATH "/home/lining/Qt5.10.0/5.10.0/gcc_64")
 endif ()
 
 add_definitions(-D${ARCH})
