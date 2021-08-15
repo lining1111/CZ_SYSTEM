@@ -6,7 +6,42 @@ set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
 set(CMAKE_AUTOUIC ON)
 
-set(CMAKE_PREFIX_PATH "/home/lining/Qt5.10.0/5.10.0/gcc_64")
+#set(CMAKE_PREFIX_PATH "/home/lining/Qt5.10.0/5.10.0/gcc_64")
+
+#根据实际情况设置
+#set(ARCH arm)
+set(ARCH x86)
+#set(ARCH arm64)
+
+if (${ARCH} STREQUAL arm)
+    set(CROSS_COMPILE /usr/local/raspberrypi/tools/arm-bcm2708/gcc-linaro-arm-linux-gnueabihf-raspbian/bin/arm-linux-gnueabihf-)
+
+    set(CMAKE_C_COMPILER ${CROSS_COMPILE}gcc)
+    set(CMAKE_C_COMPILER_AR ${CROSS_COMPILE}ar)
+    set(CMAKE_C_COMPILER_RANLIB ${CROSS_COMPILE}ranlib)
+    set(CMAKE_CXX_COMPILER ${CROSS_COMPILE}g++)
+
+    set(CMAKE_PREFIX_PATH /home/lining/Qt5.10.0/5.10.0/rpi_32/lib/cmake)
+
+endif ()
+
+if (${ARCH} STREQUAL arm64)
+    set(CROSS_COMPILE /usr/local/arm64/gcc-linaro-4.9-2016.02-x86_64_aarch64-linux-gnu/bin/aarch64-linux-gnu-)
+
+    set(CMAKE_C_COMPILER ${CROSS_COMPILE}gcc)
+    set(CMAKE_C_COMPILER_AR ${CROSS_COMPILE}ar)
+    set(CMAKE_C_COMPILER_RANLIB ${CROSS_COMPILE}ranlib)
+    set(CMAKE_CXX_COMPILER ${CROSS_COMPILE}g++)
+
+    set(CMAKE_PREFIX_PATH /home/lining/Qt5.10.0/5.5.1/arm64/lib/cmake)
+endif ()
+
+if (${ARCH} STREQUAL x86)
+    set(CMAKE_PREFIX_PATH /home/lining/Qt5.10.0/5.10.0/gcc_64/lib/cmake)
+endif ()
+
+add_definitions(-D${ARCH})
+
 
 find_package(Qt5 COMPONENTS
         Core
