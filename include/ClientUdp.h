@@ -54,7 +54,7 @@ public:
     //usrProcessRecv
     typedef void (*ProcessRecv)(Msg msg, void *pUser);
 
-    ProcessRecv UserProcessRecv;
+    ProcessRecv UserProcessRecv = nullptr;
     void *pUser;
 
     ClientUdp(string server_ip, unsigned int server_port, ProcessRecv pProcessRecv, void *pUser);

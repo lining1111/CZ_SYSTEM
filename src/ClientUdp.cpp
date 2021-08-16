@@ -85,8 +85,8 @@ int ClientUdp::Run() {
     thread_recv = thread(ThreadRecv, this);
     thread_recv.detach();
 
-    thread_processRecv = thread(ThreadProcessRecv, this);
-    thread_processRecv.detach();
+//    thread_processRecv = thread(ThreadProcessRecv, this);
+//    thread_processRecv.detach();
 
     thread_processSend = thread(ThreadProcessSend, this);
     thread_processSend.detach();
