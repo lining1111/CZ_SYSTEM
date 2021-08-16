@@ -5,9 +5,10 @@
 #ifndef _COMMON_H
 #define _COMMON_H
 
-
 #include <cstdint>
+#include <map>
 
+using namespace std;
 namespace Common {
     /**
      * 协议基本格式
@@ -30,6 +31,7 @@ namespace Common {
 #pragma pack()
 
     enum DevType {
+        UnknownDev = 0x0000,//未知设备类型,自定义
         CZ_Monitor = 0x0101,//CZ检测设备 主控板卡
         DT_Simple_Process = 0x0201,//DT采集与处理设备 功能板卡
         JQ_Simple_Process = 0x0202,//JQ信号采集与处理设备 功能板卡
@@ -73,13 +75,62 @@ namespace Common {
      *
      */
 
-
     struct InfoBase {
         uint16_t dev;//设备类型
         uint8_t cmd;//命令字
         uint8_t data[1024 * 64];//参数体
         uint16_t len;//参数体长度
     };
+
+
+
+    /**
+     * 测试设备协议，自定义
+     * 统一使用0x80命令关键字,对其参数体内的 关键字 参数长度 参数值 进行自定义
+     *              关键字         参数长度               参数值
+     * 频率           0x0001      9bytes ASCII
+     * 衰减           0x0003      5bytes ASCII
+     * 参考切换        0x0007       1byte
+     * 偏置电压         0x0008      2bytes
+     * 开始频率         0x0010      9bytes ASCII
+     * 结束频率         0x0011      9bytes ASCII
+     * 等级            0x0012      1byte
+     * 模式           0x0013       1byte
+     * 工作模式         0x0014      1byte
+     * 天线模式         0x0015      1byte
+     */
+
+    //参数体内 参数值类型
+    enum ParamType{
+        ParamType_ASCII = 0,
+        ParamType_Byte = 1,
+    };
+
+    struct ParamLen{
+        uint8_t len;
+        ParamType type;
+    };
+
+    enum ParamKey_Test{
+        ParamKey_Test_Freq = 0x0001,
+        ParamKey_Test_Atten = 0x0003,
+        ParamKey_Test_Ref = 0x0007,
+        ParamKey_Test_Vcc = 0x0008,
+        ParamKey_Test_StartFreq = 0x0010,
+        ParamKey_Test_EndFreq = 0x0011,
+        ParamKey_Test_Level = 0x0012,
+        ParamKey_Test_Mode = 0x0013,
+        ParamKey_Test_WorkMode = 0x0014,
+        ParamKey_Test_AntMode = 0x0015
+    };
+
+
+    /**
+     * 初始化测试设备的参数体内 关键字和参数长度关系
+     * @param mapKey_Test
+     * @return
+     */
+    int InitMapKey_Test(map<uint16_t ,struct ParamLen> &mapKey_Test);
 
     /**
      * 组包程序

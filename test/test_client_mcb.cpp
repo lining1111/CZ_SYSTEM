@@ -35,34 +35,74 @@ int main(){
             continue;
         }
 
-
-
-        //test send
-
-        InfoBase infoBase;
-
-        infoBase.dev = DT_Simple_Process;
-        infoBase.cmd = Cmd_Set;
-
-        uint16_t key_test = 0xffff;//关键字
-        uint8_t param_len = 0x04;//参数长度
-        uint32_t param = 0x12345678;//参数值
-
-        int index = 0;
-        memcpy(&infoBase.data[index],&key_test, sizeof(key_test));
-        index += sizeof(key_test);
-        memcpy(&infoBase.data[index],&param_len, sizeof(param_len));
-        index += sizeof(param_len);
-        memcpy(&infoBase.data[index],&param, sizeof(param));
-        index += sizeof(param);
-        infoBase.len = index;
+        int select = atoi(msg_send.c_str());
 
         ClientUdp::Msg msg;
+
         bzero(msg.buf, sizeof(msg.buf));
-        SetInfo(infoBase,msg.buf,&msg.len);
+        msg.len = 0;
 
-        clientUdp->Send(msg);
+        switch (select) {
+            case 1:{
+                //发送设置频率
+                mainControlBoard->GetInfo_SetTestBoardFreq(msg,123456);
+            }
+                break;
+            case 2:{
+                //发送设置衰减
+                mainControlBoard->GetInfo_SetTestBoardAtten(msg,123456);
+            }
+            break;
+            case 3:{
+                //发送设置参考
+                mainControlBoard->GetInfo_SetTestBoardRef(msg,0x12);
+            }
+            break;
+            case 4:{
+                //发送设置偏置电压
+                mainControlBoard->GetInfo_SetTestBoardVcc(msg,0x1234);
+            }
+            break;
+            case 5:{
+                //发送设置开始频率
+                mainControlBoard->GetInfo_SetTestBoardStartFreq(msg,123456);
+            }
+            break;
+            case 6:{
+                //发送设置结束频率
+                mainControlBoard->GetInfo_SetTestBoardEndFreq(msg,654321);
+            }
+            break;
+            case 7:{
+                //发送设置等级
+                mainControlBoard->GetInfo_SetTestBoardLevel(msg,2);
+            }
+            break;
+            case 8:{
+                //发送设置模式
+                mainControlBoard->GetInfo_SetTestBoardMode(msg,3);
+            }
+            break;
+            case 9:{
+                //发送设置工作模式
+                mainControlBoard->GetInfo_SetTestBoardWorkMode(msg,4);
+            }
+            break;
+            case 10:{
+                //发送设置天线模式
+                mainControlBoard->GetInfo_SetTestBoardAntMode(msg,5);
+            }
+            break;
+            default:{
+                cout<<"unknown select"<<endl;
+                msg.len = 0;
+            }
+            break;
+        }
 
+        if (msg.len >0){
+            clientUdp->Send(msg);
+        }
 
     }
 

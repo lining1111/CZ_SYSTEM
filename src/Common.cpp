@@ -68,4 +68,62 @@ namespace Common {
 
         return 0;
     }
+
+    int InitMapKey_Test(map<uint16_t, struct ParamLen> &mapKey_Test) {
+        int count = 0;
+
+        struct ParamLen paramLen;
+
+        paramLen.len = 9;
+        paramLen.type = ParamType_ASCII;
+        mapKey_Test[ParamKey_Test_Freq] = paramLen;
+        count++;
+
+        paramLen.len = 5;
+        paramLen.type = ParamType_ASCII;
+        mapKey_Test[ParamKey_Test_Atten] = paramLen;
+        count++;
+
+        paramLen.len = 1;
+        paramLen.type = ParamType_Byte;
+        mapKey_Test[ParamKey_Test_Ref] = paramLen;
+        count++;
+
+        paramLen.len = 2;
+        paramLen.type = ParamType_Byte;
+        mapKey_Test[ParamKey_Test_Vcc] = paramLen;
+        count++;
+
+        paramLen.len = 9;
+        paramLen.type = ParamType_ASCII;
+        mapKey_Test[ParamKey_Test_StartFreq] = paramLen;
+        count++;
+
+        paramLen.len = 9;
+        paramLen.type = ParamType_ASCII;
+        mapKey_Test[ParamKey_Test_EndFreq] = paramLen;
+        count++;
+
+        paramLen.len = 1;
+        paramLen.type = ParamType_Byte;
+        mapKey_Test[ParamKey_Test_Level] = paramLen;
+        count++;
+
+        paramLen.len = 1;
+        paramLen.type = ParamType_Byte;
+        mapKey_Test[ParamKey_Test_Mode] = paramLen;
+        count++;
+
+        paramLen.len = 1;
+        paramLen.type = ParamType_Byte;
+        mapKey_Test[ParamKey_Test_WorkMode] = paramLen;
+        count++;
+
+        paramLen.len = 1;
+        paramLen.type = ParamType_Byte;
+        mapKey_Test[ParamKey_Test_AntMode] = paramLen;
+        count++;
+
+        return count;
+    }
 }

@@ -17,6 +17,7 @@ ServerUdp::ServerUdp(ProcessRecv pProcessRecv, void *pUser) {
     this->UserProcessRecv = pProcessRecv;
     this->pUser = pUser;
     isRun = false;
+    vector_clients.clear();
 }
 
 ServerUdp::ServerUdp(unsigned int port, ProcessRecv pProcessRecv, void *pUser) {
@@ -24,6 +25,7 @@ ServerUdp::ServerUdp(unsigned int port, ProcessRecv pProcessRecv, void *pUser) {
     this->UserProcessRecv = pProcessRecv;
     this->pUser = pUser;
     isRun = false;
+    vector_clients.clear();
 }
 
 ServerUdp::~ServerUdp() {
@@ -111,6 +113,7 @@ int ServerUdp::Close() {
     if (listen_sock > 0) {
         close(listen_sock);
     }
+    vector_clients.clear();
     return 0;
 }
 
@@ -144,7 +147,12 @@ void ServerUdp::ThreadAcceptClient(void *p) {
 
                 if (len < 0) {
                     cout << "recv fail" << endl;
+                    //刪除客戶端信息
+                    server->RemoveClient(client_addr);
                 } else if (len > 0) {
+                    //记录客户端信息
+                    server->AddClient(client_addr);
+
                     //记录信息
                     Msg msg;
                     memcpy(&msg.client_addr, &client_addr, cli_len);
@@ -259,6 +267,8 @@ void ServerUdp::ThreadProcessSend(void *p) {
                 }
                 cout << "msg:" << buf_str << ",send fail,errno:" << to_string((errno)) << ",client:"
                      << inet_ntoa(msg.client_addr.sin_addr) << endl;
+                //移除记录客户端信息
+                server->RemoveClient(msg.client_addr);
             } else {
                 cout << "msg:" << buf_str << ",send ok" << ",client:"
                      << inet_ntoa(msg.client_addr.sin_addr) << endl;
@@ -267,6 +277,95 @@ void ServerUdp::ThreadProcessSend(void *p) {
         pthread_mutex_unlock(&server->lock_send);
     }
     cout << "ServerUdp " << __FUNCTION__ << " exit" << endl;
+}
+
+bool ServerUdp::IsSameClient(struct sockaddr_in clientA, struct sockaddr_in clientB) {
+    int same = memcmp(&clientA, &clientB, sizeof(struct sockaddr_in));
+
+    if (same == 0) {
+        return true;
+    } else {
+        return false;
+    }
+
+}
+
+void ServerUdp::AddClient(struct sockaddr_in client_addr) {
+    if (vector_clients.empty()) {
+        ClientInfo *clientInfo = new ClientInfo(client_addr, Common::UnknownDev);
+        //add vector
+        pthread_mutex_lock(&this->lock_vector_client);
+        vector_clients.push_back(clientInfo);
+        pthread_cond_broadcast(&this->cond_vector_client);
+        pthread_mutex_unlock(&this->lock_vector_client);
+
+        timeval tv_now;
+        gettimeofday(&tv_now, nullptr);
+        cout << "add client ip:" << inet_ntoa(client_addr.sin_addr) << " port:"
+        << to_string(client_addr.sin_port) << ",at " << ctime((time_t *) &tv_now.tv_sec) << endl;
+    } else {
+        bool isRecord = false;
+        for (auto iter:vector_clients) {
+            if (IsSameClient(client_addr, iter->clientAddr)) {
+                isRecord = true;
+                break;
+            }
+        }
+        if (!isRecord) {
+            ClientInfo *clientInfo = new ClientInfo(client_addr, Common::UnknownDev);
+            //add vector
+            pthread_mutex_lock(&this->lock_vector_client);
+            vector_clients.push_back(clientInfo);
+            pthread_cond_broadcast(&this->cond_vector_client);
+            pthread_mutex_unlock(&this->lock_vector_client);
+
+            timeval tv_now;
+            gettimeofday(&tv_now, nullptr);
+            cout << "add client ip:" << inet_ntoa(client_addr.sin_addr) << " port:"
+                 << to_string(client_addr.sin_port) << ",at " << ctime((time_t *) &tv_now.tv_sec) << endl;
+        }
+    }
+}
+
+void ServerUdp::RemoveClient(struct sockaddr_in client_addr) {
+    if (vector_clients.empty()) {
+        return;
+    }
+    pthread_mutex_lock(&this->lock_vector_client);
+    //vector erase
+    for (int i = 0; i < vector_clients.size(); i++) {
+        auto iter = vector_clients.at(i);
+        if (IsSameClient(client_addr, iter->clientAddr)) {
+            //delete client class release clientInfo->rb
+            delete iter;
+
+            //erase vector
+            vector_clients.erase(vector_clients.begin() + i);
+            vector_clients.shrink_to_fit();
+
+            timeval tv_now;
+            gettimeofday(&tv_now, nullptr);
+            cout << "remove client ip:" << inet_ntoa(client_addr.sin_addr) << " port:"
+                 << to_string(client_addr.sin_port) << ",at " << ctime((time_t *) &tv_now.tv_sec) << endl;
+            break;
+        }
+    }
+    pthread_cond_broadcast(&this->cond_vector_client);
+    pthread_mutex_unlock(&this->lock_vector_client);
+}
+
+void ServerUdp::MarkClient(struct sockaddr_in client_addr, DevType devType) {
+    if (vector_clients.empty()) {
+        return;
+    }
+
+    for (auto iter:vector_clients) {
+        if (iter->devType == Common::UnknownDev) {
+            if (IsSameClient(client_addr,iter->clientAddr)){
+                iter->devType = devType;
+            }
+        }
+    }
 }
 
 int ServerUdp::Send(ServerUdp::Msg msg) {

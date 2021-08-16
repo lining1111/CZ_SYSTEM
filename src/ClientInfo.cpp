@@ -6,9 +6,9 @@
 #include <sys/time.h>
 #include "ClientInfo.h"
 
-ClientInfo::ClientInfo(struct sockaddr_in clientAddr, int client_fd) {
+ClientInfo::ClientInfo(struct sockaddr_in clientAddr, DevType devType) {
     this->clientAddr = clientAddr;
-    this->fd = client_fd;
+    this->devType = devType;
     gettimeofday(&this->receive_time, nullptr);
 }
 

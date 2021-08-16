@@ -8,18 +8,20 @@
 
 #include <sys/socket.h>
 #include <arpa/inet.h>
-#include "RingBuffer.h"
 #include <string>
+#include "RingBuffer.h"
+#include "Common.h"
 
 using namespace std;
+using namespace Common;
 
 class ClientInfo {
 public:
     struct sockaddr_in clientAddr;
-    int fd;
+    DevType devType = UnknownDev;
     timeval receive_time;
 public:
-    ClientInfo(struct sockaddr_in clientAddr, int client_fd);
+    ClientInfo(struct sockaddr_in clientAddr, DevType devType);
 
     ~ClientInfo();
 };
