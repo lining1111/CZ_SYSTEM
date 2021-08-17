@@ -23,6 +23,31 @@ MainWindow::MainWindow(QWidget *parent) :
     thread_processRecv_ClientUdp_test.detach();
 
     ui->setupUi(this);
+
+    this->setFocusPolicy(Qt::StrongFocus);
+
+    //限定输入范围
+
+    //freq 0-999999999
+    ui->lineEdit_testBoard_setFreq_value->setValidator(new QDoubleValidator(0, 9999999999, 9, this));
+    //atten 0-99999
+    ui->lineEdit_testBoard_setAtten_value->setValidator(new QIntValidator(0, 99999, this));
+    //ref 1-2
+    ui->lineEdit_testBoard_setRef_value->setValidator(new QIntValidator(1, 2, this));
+    //vcc 0-3300
+    ui->lineEdit_testBoard_setVcc_value->setValidator(new QIntValidator(0, 3300, this));
+    //startfreq 0-999999999
+    ui->lineEdit_testBoard_setStartFreq_value->setValidator(new QDoubleValidator(0, 9999999999, 9, this));
+    //endfreq 0-999999999
+    ui->lineEdit_testBoard_setEndFreq_value->setValidator(new QDoubleValidator(0, 999999999, 9, this));
+    //level 0-255
+    ui->lineEdit_testBoard_setLevel_value->setValidator(new QIntValidator(0, 255, this));
+    //mode 0-255
+    ui->lineEdit_testBoard_setMode_value->setValidator(new QIntValidator(0, 255, this));
+    //workMode 0-255
+    ui->lineEdit_testBoard_setWorkMode_value->setValidator(new QIntValidator(0, 255, this));
+    //antMode 0-255
+    ui->lineEdit_testBoard_setAntMode_value->setValidator(new QIntValidator(0, 255, this));
 }
 
 MainWindow::~MainWindow() {
@@ -30,6 +55,38 @@ MainWindow::~MainWindow() {
     delete mainControlBoard;
 
     delete ui;
+}
+
+void MainWindow::keyPressEvent(QKeyEvent *event) {
+//    QWidget::keyPressEvent(event);
+    switch (event->key()) {
+        case Qt::Key_Up: {
+            cout << "key up" << endl;
+
+//            upDownCount--;
+//            if (upDownCount <= 0) {
+//                upDownCount = 0;
+//            }
+//            cout << "upDownCount:" << to_string(upDownCount) << endl;
+            this->focusPreviousChild();
+        }
+            break;
+        case Qt::Key_Down: {
+            cout << "key down" << endl;
+
+//            upDownCount++;
+//            if (upDownCount >= 9) {
+//                upDownCount = 9;
+//            }
+//            cout << "upDownCount:" << to_string(upDownCount) << endl;
+            this->focusNextChild();
+        }
+            break;
+        default: {
+
+        }
+            break;
+    }
 }
 
 
@@ -205,150 +262,149 @@ void MainWindow::ThreadProcessRecv_ClientUdp_test(void *p) {
                 continue;
             }
             switch (infoBase.cmd) {
-                case Rsp_Set:{
+                case Rsp_Set: {
                     uint16_t paramKey = 0;
                     uint8_t result;
                     int index = 0;
-                    memcpy(&paramKey,&infoBase.data[index], sizeof(paramKey));
+                    memcpy(&paramKey, &infoBase.data[index], sizeof(paramKey));
                     index += sizeof(paramKey);
-                    memcpy(&result,&infoBase.data[index], sizeof(result));
-                    index +=sizeof(result);
+                    memcpy(&result, &infoBase.data[index], sizeof(result));
+                    index += sizeof(result);
 
                     //按照参数体内关键字和结果，打印输出到结果ui
                     switch (paramKey) {
-                        case ParamKey_Test_Freq:{
-                            if (result == 0x20){
+                        case ParamKey_Test_Freq: {
+                            if (result == 0x20) {
                                 QString show = "设置频率成功";
                                 local->ui->plainTextEdit_result->appendPlainText(show);
-                            }else if (result == 0x21){
+                            } else if (result == 0x21) {
                                 QString show = "设置频率失败";
                                 local->ui->plainTextEdit_result->appendPlainText(show);
                             }
                         }
-                        break;
-                        case ParamKey_Test_Atten:{
-                            if (result == 0x20){
+                            break;
+                        case ParamKey_Test_Atten: {
+                            if (result == 0x20) {
                                 QString show = "设置衰减成功";
                                 local->ui->plainTextEdit_result->appendPlainText(show);
-                            }else if (result == 0x21){
+                            } else if (result == 0x21) {
                                 QString show = "设置衰减失败";
                                 local->ui->plainTextEdit_result->appendPlainText(show);
                             }
                         }
-                        break;
-                        case ParamKey_Test_Ref:{
-                            if (result == 0x20){
+                            break;
+                        case ParamKey_Test_Ref: {
+                            if (result == 0x20) {
                                 QString show = "设置参考切换成功";
                                 local->ui->plainTextEdit_result->appendPlainText(show);
-                            }else if (result == 0x21){
+                            } else if (result == 0x21) {
                                 QString show = "设置参考切换失败";
                                 local->ui->plainTextEdit_result->appendPlainText(show);
                             }
                         }
-                        break;
-                        case ParamKey_Test_Vcc:{
-                            if (result == 0x20){
+                            break;
+                        case ParamKey_Test_Vcc: {
+                            if (result == 0x20) {
                                 QString show = "设置偏置电压成功";
                                 local->ui->plainTextEdit_result->appendPlainText(show);
-                            }else if (result == 0x21){
+                            } else if (result == 0x21) {
                                 QString show = "设置偏置电压失败";
                                 local->ui->plainTextEdit_result->appendPlainText(show);
                             }
                         }
-                        break;
-                        case ParamKey_Test_StartFreq:{
-                            if (result == 0x20){
+                            break;
+                        case ParamKey_Test_StartFreq: {
+                            if (result == 0x20) {
                                 QString show = "设置开始频率成功";
                                 local->ui->plainTextEdit_result->appendPlainText(show);
-                            }else if (result == 0x21){
+                            } else if (result == 0x21) {
                                 QString show = "设置开始频率失败";
                                 local->ui->plainTextEdit_result->appendPlainText(show);
                             }
                         }
-                        break;
-                        case ParamKey_Test_EndFreq:{
-                            if (result == 0x20){
+                            break;
+                        case ParamKey_Test_EndFreq: {
+                            if (result == 0x20) {
                                 QString show = "设置结束频率成功";
                                 local->ui->plainTextEdit_result->appendPlainText(show);
-                            }else if (result == 0x21){
+                            } else if (result == 0x21) {
                                 QString show = "设置结束频率失败";
                                 local->ui->plainTextEdit_result->appendPlainText(show);
                             }
                         }
-                        break;
-                        case ParamKey_Test_Level:{
-                            if (result == 0x20){
+                            break;
+                        case ParamKey_Test_Level: {
+                            if (result == 0x20) {
                                 QString show = "设置等级成功";
                                 local->ui->plainTextEdit_result->appendPlainText(show);
-                            }else if (result == 0x21){
+                            } else if (result == 0x21) {
                                 QString show = "设置等级失败";
                                 local->ui->plainTextEdit_result->appendPlainText(show);
                             }
                         }
-                        break;
-                        case ParamKey_Test_Mode:{
-                            if (result == 0x20){
+                            break;
+                        case ParamKey_Test_Mode: {
+                            if (result == 0x20) {
                                 QString show = "设置模式成功";
                                 local->ui->plainTextEdit_result->appendPlainText(show);
-                            }else if (result == 0x21){
+                            } else if (result == 0x21) {
                                 QString show = "设置模式失败";
                                 local->ui->plainTextEdit_result->appendPlainText(show);
                             }
                         }
-                        break;
-                        case ParamKey_Test_WorkMode:{
-                            if (result == 0x20){
+                            break;
+                        case ParamKey_Test_WorkMode: {
+                            if (result == 0x20) {
                                 QString show = "设置工作模式成功";
                                 local->ui->plainTextEdit_result->appendPlainText(show);
-                            }else if (result == 0x21){
+                            } else if (result == 0x21) {
                                 QString show = "设置工作模式失败";
                                 local->ui->plainTextEdit_result->appendPlainText(show);
                             }
                         }
-                        break;
-                        case ParamKey_Test_AntMode:{
-                            if (result == 0x20){
+                            break;
+                        case ParamKey_Test_AntMode: {
+                            if (result == 0x20) {
                                 QString show = "设置天线模式成功";
                                 local->ui->plainTextEdit_result->appendPlainText(show);
-                            }else if (result == 0x21){
+                            } else if (result == 0x21) {
                                 QString show = "设置天线模式失败";
                                 local->ui->plainTextEdit_result->appendPlainText(show);
                             }
                         }
-                        break;
-                        default:{
+                            break;
+                        default: {
                             //未知
                             QString show = "未知关键字";
                             local->ui->plainTextEdit_result->appendPlainText(show);
                         }
-                        break;
+                            break;
                     }
 
 
+                }
+                    break;
+                case Rsp_GetAll: {
 
                 }
                     break;
-                case Rsp_GetAll:{
+                case Rsp_Get: {
 
                 }
                     break;
-                case Rsp_Get:{
+                case Rsp_CheckControl: {
 
                 }
                     break;
-                case Rsp_CheckControl:{
+                case Rsp_GetHealth: {
 
                 }
                     break;
-                case Rsp_GetHealth:{
+                case CheckResult_Report: {
 
                 }
                     break;
-                case CheckResult_Report:{
-
-                }
-                    break;
-                default:{
+                default: {
                     cout << "unknown cmd:" << to_string(infoBase.cmd) << endl;
                 }
                     break;

@@ -22,6 +22,9 @@
      <height>91</height>
     </rect>
    </property>
+   <property name="focusPolicy">
+    <enum>Qt::NoFocus</enum>
+   </property>
   </widget>
   <widget class="QLineEdit" name="lineEdit_testBoard_setFreq_value">
    <property name="geometry">
@@ -31,6 +34,15 @@
      <width>113</width>
      <height>25</height>
     </rect>
+   </property>
+   <property name="maximumSize">
+    <size>
+     <width>113</width>
+     <height>25</height>
+    </size>
+   </property>
+   <property name="maxLength">
+    <number>9</number>
    </property>
   </widget>
   <widget class="QLabel" name="label_testBoard">
@@ -107,6 +119,9 @@
      <height>25</height>
     </rect>
    </property>
+   <property name="maxLength">
+    <number>5</number>
+   </property>
   </widget>
   <widget class="QLabel" name="label_testBoard_setAtten_uint">
    <property name="geometry">
@@ -156,6 +171,9 @@
      <height>25</height>
     </rect>
    </property>
+   <property name="maxLength">
+    <number>4</number>
+   </property>
   </widget>
   <widget class="QLabel" name="label_testBoard_setVcc_uint">
    <property name="geometry">
@@ -191,6 +209,9 @@
      <width>113</width>
      <height>25</height>
     </rect>
+   </property>
+   <property name="maxLength">
+    <number>9</number>
    </property>
   </widget>
   <widget class="QLabel" name="label_testBoard_setStartFreq_uint">
@@ -228,6 +249,9 @@
      <height>25</height>
     </rect>
    </property>
+   <property name="maxLength">
+    <number>9</number>
+   </property>
   </widget>
   <widget class="QLabel" name="label_testBoard_setEndFreq_uint">
    <property name="geometry">
@@ -264,6 +288,9 @@
      <height>25</height>
     </rect>
    </property>
+   <property name="maxLength">
+    <number>4</number>
+   </property>
   </widget>
   <widget class="QLabel" name="label_testBoard_setMode_title">
    <property name="geometry">
@@ -286,6 +313,9 @@
      <width>113</width>
      <height>25</height>
     </rect>
+   </property>
+   <property name="maxLength">
+    <number>4</number>
    </property>
   </widget>
   <widget class="QLabel" name="label_testBoard_setWorkMode_title">
@@ -310,6 +340,9 @@
      <height>25</height>
     </rect>
    </property>
+   <property name="maxLength">
+    <number>1</number>
+   </property>
   </widget>
   <widget class="QLabel" name="label_testBoard_setAntMode_title">
    <property name="geometry">
@@ -333,6 +366,9 @@
      <height>25</height>
     </rect>
    </property>
+   <property name="maxLength">
+    <number>1</number>
+   </property>
   </widget>
   <widget class="QLineEdit" name="lineEdit_testBoard_setRef_value">
    <property name="geometry">
@@ -343,8 +379,24 @@
      <height>25</height>
     </rect>
    </property>
+   <property name="maxLength">
+    <number>1</number>
+   </property>
   </widget>
  </widget>
+ <tabstops>
+  <tabstop>lineEdit_testBoard_setFreq_value</tabstop>
+  <tabstop>lineEdit_testBoard_setAtten_value</tabstop>
+  <tabstop>lineEdit_testBoard_setRef_value</tabstop>
+  <tabstop>lineEdit_testBoard_setVcc_value</tabstop>
+  <tabstop>lineEdit_testBoard_setStartFreq_value</tabstop>
+  <tabstop>lineEdit_testBoard_setEndFreq_value</tabstop>
+  <tabstop>lineEdit_testBoard_setLevel_value</tabstop>
+  <tabstop>lineEdit_testBoard_setMode_value</tabstop>
+  <tabstop>lineEdit_testBoard_setWorkMode_value</tabstop>
+  <tabstop>lineEdit_testBoard_setAntMode_value</tabstop>
+  <tabstop>plainTextEdit_result</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
 </ui>

@@ -42,6 +42,15 @@ private:
     Ui::MainWindow *ui;
 
 
+public:
+
+    int upDownCount = 0;
+    /**
+     * 键盘事件
+     * @param event
+     */
+    void keyPressEvent(QKeyEvent *event);
+
 public slots:
     /**
      * 发送频率设置
