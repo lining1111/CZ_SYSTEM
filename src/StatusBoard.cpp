@@ -37,13 +37,15 @@ void StatusBoard::ProcessRecv(ServerUdp &server, ServerUdp::Msg msg, void *pUser
             uint16_t key;
             uint8_t param_len;
             uint8_t param_data[64];
-            uint8_t result = 0x20;
+            uint8_t result = Result_Success;
 
             //get set
             int index_frame = 0;
             //get key
-            memcpy(&key, &infoBase.data[index_frame], sizeof(key));
-            index_frame += sizeof(key);
+            uint16_t key_get;//关键字，网络字节
+            memcpy(&key_get, &infoBase.data[index_frame], sizeof(key_get));
+            index_frame += sizeof(key_get);
+            key = ntohs(key_get);
             //get param_len
             memcpy(&param_len, &infoBase.data[index_frame], sizeof(param_len));
             index_frame += sizeof(param_len);

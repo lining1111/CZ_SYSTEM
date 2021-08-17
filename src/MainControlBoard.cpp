@@ -71,8 +71,9 @@ int MainControlBoard::GetInfo_Base(ClientUdp::Msg &msg, DevType type, Cmd cmd, u
 
     //组织参数体
     int index = 0;
-    memcpy(&infoBase.data[index], &key, sizeof(key));
-    index += sizeof(key);
+    uint16_t key_send = htons(key);//关键字，发送网络字节
+    memcpy(&infoBase.data[index], &key_send, sizeof(key_send));
+    index += sizeof(key_send);
     memcpy(&infoBase.data[index], &paramLen, sizeof(paramLen));
     index += sizeof(paramLen);
     memcpy(&infoBase.data[index], param, paramLen);

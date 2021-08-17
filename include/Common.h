@@ -60,6 +60,11 @@ namespace Common {
         Rsp_GetHealth = 0xa2,//被监控设备返回的健康参数查询响应
     };
 
+    enum Result{
+        Result_Success = 0x20,//设置成功
+        Result_Fail = 0x21,//设置失败
+    };
+
     /**
      * 0x80 参数体格式：由若干 关键字(2bytes)+参数长度(1byte)+参数值(n bytes) 关键字由设备研制单位自定义
      * 0x81 参数体格式：由若干 关键字(2bytes)+设置结果(1byte 20H表示设置成功；21H表示设置失败)

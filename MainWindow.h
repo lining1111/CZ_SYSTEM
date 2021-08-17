@@ -51,6 +51,12 @@ public:
      */
     void keyPressEvent(QKeyEvent *event);
 
+    signals:
+    void UpdateResult(QString info);
+
+public slots:
+    void on_UpdateResult(QString info);
+
 public slots:
     /**
      * 发送频率设置

@@ -3,6 +3,7 @@
 //
 
 #include <cstring>
+#include <netinet/in.h>
 #include "Common.h"
 
 namespace Common {
@@ -14,13 +15,13 @@ namespace Common {
         }
         int index = 0;
 
-        CommonHead head;
-        CommonTail tail;
+        CommonHead head;//网络字节
+        CommonTail tail;//网络字节
 
         //head
-        head.dev = infoBase.dev;
+        head.dev = htons(infoBase.dev);
         head.cmd = infoBase.cmd;
-        head.frameLen = infoBase.len;
+        head.frameLen = htons(infoBase.len);
         memcpy(&out[index], &head, sizeof(head));
         index += sizeof(head);
         //frame
@@ -47,20 +48,20 @@ namespace Common {
             return 0;
         }
         int index = 0;
-        CommonHead head;
-        CommonTail tail;
+        CommonHead head;//网络字节
+        CommonTail tail;//网络字节
 
         //head
         memcpy(&head, &in[index], sizeof(head));
         index += sizeof(head);
-        infoBase.dev = head.dev;
+        infoBase.dev = ntohs(head.dev);
         infoBase.cmd = head.cmd;
-
+        infoBase.len = ntohs(head.frameLen);
         //frame
         bzero(infoBase.data, sizeof(infoBase.data));
-        memcpy(infoBase.data, &in[index], head.frameLen);
-        index += head.frameLen;
-        infoBase.len = head.frameLen;
+        memcpy(infoBase.data, &in[index], infoBase.len);
+        index += infoBase.len;
+
         //tail
         memcpy(&tail, &in[index], sizeof(tail));
         index += sizeof(tail);
