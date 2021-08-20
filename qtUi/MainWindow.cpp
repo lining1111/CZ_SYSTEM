@@ -5,15 +5,17 @@
 // You may need to build the project (run Qt uic code generator) to get "ui_MainWindow.h" resolved
 
 #include "MainWindow.h"
-#include "ui_MainWindow.h"
+#include "resource_mainwindow.h"
+
+#include <QDebug>
+#include <QKeyEvent>
 
 #include <iostream>
 #include <unistd.h>
 
 using namespace std;
 
-MainWindow::MainWindow(QWidget *parent) :
-        QWidget(parent), ui(new Ui::MainWindow) {
+MainWindow::MainWindow(QWidget *parent) {
     mainControlBoard = new MainControlBoard();
     clientUdp_test = new ClientUdp(serverConfig_test.ip, serverConfig_test.port,
                                    nullptr, mainControlBoard);
@@ -22,41 +24,58 @@ MainWindow::MainWindow(QWidget *parent) :
     thread_processRecv_ClientUdp_test = std::thread(ThreadProcessRecv_ClientUdp_test, this);
     thread_processRecv_ClientUdp_test.detach();
 
-    ui->setupUi(this);
-
     QObject::connect(this, SIGNAL(UpdateResult(QString)), this, SLOT(on_UpdateResult(QString)));
 
 //    this->setFocusPolicy(Qt::StrongFocus);
 
-    //限定输入范围
+    if (this->objectName().isEmpty()) {
+        this->setObjectName(QString(windows1_objname));
+    }
+    this->resize(640, 340);
+    this->setToolTip("test");
 
-    //freq 0-999999999
-    ui->lineEdit_testBoard_setFreq_value->setValidator(new QDoubleValidator(0, 9999999999, 9, this));
-    //atten 0-99999
-    ui->lineEdit_testBoard_setAtten_value->setValidator(new QIntValidator(0, 99999, this));
-    //ref 1-2
-    ui->lineEdit_testBoard_setRef_value->setValidator(new QIntValidator(1, 2, this));
-    //vcc 0-3300
-    ui->lineEdit_testBoard_setVcc_value->setValidator(new QIntValidator(0, 3300, this));
-    //startfreq 0-999999999
-    ui->lineEdit_testBoard_setStartFreq_value->setValidator(new QDoubleValidator(0, 9999999999, 9, this));
-    //endfreq 0-999999999
-    ui->lineEdit_testBoard_setEndFreq_value->setValidator(new QDoubleValidator(0, 999999999, 9, this));
-    //level 0-255
-    ui->lineEdit_testBoard_setLevel_value->setValidator(new QIntValidator(0, 255, this));
-    //mode 0-255
-    ui->lineEdit_testBoard_setMode_value->setValidator(new QIntValidator(0, 255, this));
-    //workMode 0-255
-    ui->lineEdit_testBoard_setWorkMode_value->setValidator(new QIntValidator(0, 255, this));
-    //antMode 0-255
-    ui->lineEdit_testBoard_setAntMode_value->setValidator(new QIntValidator(0, 255, this));
+    //btn1
+    pushButton_dialog1 = new QPushButton(this);
+    pushButton_dialog1->setFocusPolicy(Qt::StrongFocus);
+    pushButton_dialog1->setObjectName(QString(btn_dialog1_objname));
+    pushButton_dialog1->move(10, 10);
+    pushButton_dialog1->setText(QString(btn_dialog1_show));
+    connect(this->pushButton_dialog1, SIGNAL(pressed()), this, SLOT(on_Btn_dialog1_returnPressed()));
+
+    //btn2
+    pushButton_dialog2 = new QPushButton(this);
+    pushButton_dialog2->setFocusPolicy(Qt::StrongFocus);
+    pushButton_dialog2->setObjectName(QString(btn_dialog2_objname));
+    pushButton_dialog2->move(10, 50);
+    pushButton_dialog2->setText(QString(btn_dialog2_show));
+    connect(this->pushButton_dialog2, SIGNAL(pressed()), this, SLOT(on_Btn_dialog2_returnPressed()));
+
+    //btn3
+    pushButton_dialog3 = new QPushButton(this);
+    pushButton_dialog3->setFocusPolicy(Qt::StrongFocus);
+    pushButton_dialog3->setObjectName(QString(btn_dialog3_objname));
+    pushButton_dialog3->move(10, 90);
+    pushButton_dialog3->setText(QString(btn_dialog3_show));
+    connect(this->pushButton_dialog3, SIGNAL(pressed()), this, SLOT(on_Btn_dialog3_returnPressed()));
+
+    //btn4
+    pushButton_dialog4 = new QPushButton(this);
+    pushButton_dialog4->setFocusPolicy(Qt::StrongFocus);
+    pushButton_dialog4->setObjectName(QString(btn_dialog4_objname));
+    pushButton_dialog4->move(10, 130);
+    pushButton_dialog4->setText(QString(btn_dialog4_show));
+    connect(this->pushButton_dialog4, SIGNAL(pressed()), this, SLOT(on_Btn_dialog4_returnPressed()));
+
+    setTabOrder(pushButton_dialog1, pushButton_dialog2);
+    setTabOrder(pushButton_dialog2, pushButton_dialog3);
+    setTabOrder(pushButton_dialog3, pushButton_dialog4);
 }
 
 MainWindow::~MainWindow() {
     delete clientUdp_test;
     delete mainControlBoard;
 
-    delete ui;
+//    delete ui;
 }
 
 void MainWindow::keyPressEvent(QKeyEvent *event) {
@@ -65,22 +84,12 @@ void MainWindow::keyPressEvent(QKeyEvent *event) {
         case Qt::Key_Up: {
             cout << "key up" << endl;
 
-//            upDownCount--;
-//            if (upDownCount <= 0) {
-//                upDownCount = 0;
-//            }
-//            cout << "upDownCount:" << to_string(upDownCount) << endl;
             this->focusPreviousChild();
         }
             break;
         case Qt::Key_Down: {
             cout << "key down" << endl;
 
-//            upDownCount++;
-//            if (upDownCount >= 9) {
-//                upDownCount = 9;
-//            }
-//            cout << "upDownCount:" << to_string(upDownCount) << endl;
             this->focusNextChild();
         }
             break;
@@ -94,148 +103,164 @@ void MainWindow::keyPressEvent(QKeyEvent *event) {
 
 void MainWindow::on_UpdateResult(QString info) {
     //最多100行
-    if (ui->plainTextEdit_result->blockCount() >=100){
-        ui->plainTextEdit_result->clear();
-    }
-    ui->plainTextEdit_result->appendPlainText(info);
+//    if (ui->plainTextEdit_result->blockCount() >=100){
+//        ui->plainTextEdit_result->clear();
+//    }
+//    ui->plainTextEdit_result->appendPlainText(info);
+}
+
+void MainWindow::on_Btn_dialog1_returnPressed() {
+    qDebug() << "btn_dialog1 pressed";
+}
+
+void MainWindow::on_Btn_dialog2_returnPressed() {
+    qDebug() << "btn_dialog2 pressed";
+}
+
+void MainWindow::on_Btn_dialog3_returnPressed() {
+    qDebug() << "btn_dialog3 pressed";
+}
+
+void MainWindow::on_Btn_dialog4_returnPressed() {
+    qDebug() << "btn_dialog4 pressed";
 }
 
 void MainWindow::on_lineEdit_testBoard_setFreq_value_returnPressed() {
-    QString valueStr = ui->lineEdit_testBoard_setFreq_value->text();
-    uint64_t value = valueStr.toLong();
-    cout << "set freq:" << to_string(value) << " kHz" << endl;
-
-    //set testBoard freq
-    if (clientUdp_test->isRun) {
-        ClientUdp::Msg msg;
-        mainControlBoard->GetInfo_SetTestBoardFreq(msg, value);
-        clientUdp_test->Send(msg);
-    }
+//    QString valueStr = ui->lineEdit_testBoard_setFreq_value->text();
+//    uint64_t value = valueStr.toLong();
+//    cout << "set freq:" << to_string(value) << " kHz" << endl;
+//
+//    //set testBoard freq
+//    if (clientUdp_test->isRun) {
+//        ClientUdp::Msg msg;
+//        mainControlBoard->GetInfo_SetTestBoardFreq(msg, value);
+//        clientUdp_test->Send(msg);
+//    }
 }
 
 void MainWindow::on_lineEdit_testBoard_setAtten_value_returnPressed() {
-    QString valueStr = ui->lineEdit_testBoard_setAtten_value->text();
-    uint64_t value = valueStr.toLong();
-    cout << "set atten:" << to_string(value / 10) << " dB" << endl;
-
-    //set testBoard freq
-    if (clientUdp_test->isRun) {
-        ClientUdp::Msg msg;
-        mainControlBoard->GetInfo_SetTestBoardAtten(msg, value);
-        clientUdp_test->Send(msg);
-    }
+//    QString valueStr = ui->lineEdit_testBoard_setAtten_value->text();
+//    uint64_t value = valueStr.toLong();
+//    cout << "set atten:" << to_string(value / 10) << " dB" << endl;
+//
+//    //set testBoard freq
+//    if (clientUdp_test->isRun) {
+//        ClientUdp::Msg msg;
+//        mainControlBoard->GetInfo_SetTestBoardAtten(msg, value);
+//        clientUdp_test->Send(msg);
+//    }
 }
 
 void MainWindow::on_lineEdit_testBoard_setRef_value_returnPressed() {
-    QString valueStr = ui->lineEdit_testBoard_setRef_value->text();
-    uint8_t value = valueStr.toLong();
-
-    uint8_t ref = 0x80;//内参考
-    if (value == 1) {
-        ref = 0x80;//内参考
-    } else if (value == 2) {
-        ref = 0x81;//外参考
-    }
-
-    cout << "set ref:" << to_string(ref) << endl;
-
-    //set testBoard freq
-    if (clientUdp_test->isRun) {
-        ClientUdp::Msg msg;
-        mainControlBoard->GetInfo_SetTestBoardRef(msg, ref);
-        clientUdp_test->Send(msg);
-    }
+//    QString valueStr = ui->lineEdit_testBoard_setRef_value->text();
+//    uint8_t value = valueStr.toLong();
+//
+//    uint8_t ref = 0x80;//内参考
+//    if (value == 1) {
+//        ref = 0x80;//内参考
+//    } else if (value == 2) {
+//        ref = 0x81;//外参考
+//    }
+//
+//    cout << "set ref:" << to_string(ref) << endl;
+//
+//    //set testBoard freq
+//    if (clientUdp_test->isRun) {
+//        ClientUdp::Msg msg;
+//        mainControlBoard->GetInfo_SetTestBoardRef(msg, ref);
+//        clientUdp_test->Send(msg);
+//    }
 }
 
 void MainWindow::on_lineEdit_testBoard_setVcc_value_returnPressed() {
-    QString valueStr = ui->lineEdit_testBoard_setVcc_value->text();
-    uint64_t value = valueStr.toLong();
-    cout << "set vcc:" << to_string(value) << " mv" << endl;
-
-    //set testBoard freq
-    if (clientUdp_test->isRun) {
-        ClientUdp::Msg msg;
-        mainControlBoard->GetInfo_SetTestBoardVcc(msg, value);
-        clientUdp_test->Send(msg);
-    }
+//    QString valueStr = ui->lineEdit_testBoard_setVcc_value->text();
+//    uint64_t value = valueStr.toLong();
+//    cout << "set vcc:" << to_string(value) << " mv" << endl;
+//
+//    //set testBoard freq
+//    if (clientUdp_test->isRun) {
+//        ClientUdp::Msg msg;
+//        mainControlBoard->GetInfo_SetTestBoardVcc(msg, value);
+//        clientUdp_test->Send(msg);
+//    }
 }
 
 void MainWindow::on_lineEdit_testBoard_setStartFreq_value_returnPressed() {
-    QString valueStr = ui->lineEdit_testBoard_setStartFreq_value->text();
-    uint32_t value = valueStr.toLong();
-    cout << "set startFreq:" << to_string(value) << " kHz" << endl;
-
-    //set testBoard freq
-    if (clientUdp_test->isRun) {
-        ClientUdp::Msg msg;
-        mainControlBoard->GetInfo_SetTestBoardStartFreq(msg, value);
-        clientUdp_test->Send(msg);
-    }
+//    QString valueStr = ui->lineEdit_testBoard_setStartFreq_value->text();
+//    uint32_t value = valueStr.toLong();
+//    cout << "set startFreq:" << to_string(value) << " kHz" << endl;
+//
+//    //set testBoard freq
+//    if (clientUdp_test->isRun) {
+//        ClientUdp::Msg msg;
+//        mainControlBoard->GetInfo_SetTestBoardStartFreq(msg, value);
+//        clientUdp_test->Send(msg);
+//    }
 }
 
 void MainWindow::on_lineEdit_testBoard_setEndFreq_value_returnPressed() {
-    QString valueStr = ui->lineEdit_testBoard_setEndFreq_value->text();
-    uint32_t value = valueStr.toLong();
-    cout << "set endFreq:" << to_string(value) << " kHz" << endl;
-
-    //set testBoard freq
-    if (clientUdp_test->isRun) {
-        ClientUdp::Msg msg;
-        mainControlBoard->GetInfo_SetTestBoardEndFreq(msg, value);
-        clientUdp_test->Send(msg);
-    }
+//    QString valueStr = ui->lineEdit_testBoard_setEndFreq_value->text();
+//    uint32_t value = valueStr.toLong();
+//    cout << "set endFreq:" << to_string(value) << " kHz" << endl;
+//
+//    //set testBoard freq
+//    if (clientUdp_test->isRun) {
+//        ClientUdp::Msg msg;
+//        mainControlBoard->GetInfo_SetTestBoardEndFreq(msg, value);
+//        clientUdp_test->Send(msg);
+//    }
 }
 
 void MainWindow::on_lineEdit_testBoard_setLevel_value_returnPressed() {
-    QString valueStr = ui->lineEdit_testBoard_setLevel_value->text();
-    uint8_t value = valueStr.toLong();
-    cout << "set level:" << to_string(value) << endl;
-
-    //set testBoard freq
-    if (clientUdp_test->isRun) {
-        ClientUdp::Msg msg;
-        mainControlBoard->GetInfo_SetTestBoardLevel(msg, value);
-        clientUdp_test->Send(msg);
-    }
+//    QString valueStr = ui->lineEdit_testBoard_setLevel_value->text();
+//    uint8_t value = valueStr.toLong();
+//    cout << "set level:" << to_string(value) << endl;
+//
+//    //set testBoard freq
+//    if (clientUdp_test->isRun) {
+//        ClientUdp::Msg msg;
+//        mainControlBoard->GetInfo_SetTestBoardLevel(msg, value);
+//        clientUdp_test->Send(msg);
+//    }
 }
 
 void MainWindow::on_lineEdit_testBoard_setMode_value_returnPressed() {
-    QString valueStr = ui->lineEdit_testBoard_setMode_value->text();
-    uint8_t value = valueStr.toLong();
-    cout << "set mode:" << to_string(value) << endl;
-
-    //set testBoard freq
-    if (clientUdp_test->isRun) {
-        ClientUdp::Msg msg;
-        mainControlBoard->GetInfo_SetTestBoardMode(msg, value);
-        clientUdp_test->Send(msg);
-    }
+//    QString valueStr = ui->lineEdit_testBoard_setMode_value->text();
+//    uint8_t value = valueStr.toLong();
+//    cout << "set mode:" << to_string(value) << endl;
+//
+//    //set testBoard freq
+//    if (clientUdp_test->isRun) {
+//        ClientUdp::Msg msg;
+//        mainControlBoard->GetInfo_SetTestBoardMode(msg, value);
+//        clientUdp_test->Send(msg);
+//    }
 }
 
 void MainWindow::on_lineEdit_testBoard_setWorkMode_value_returnPressed() {
-    QString valueStr = ui->lineEdit_testBoard_setWorkMode_value->text();
-    uint8_t value = valueStr.toLong();
-    cout << "set workMode:" << to_string(value) << endl;
-
-    //set testBoard freq
-    if (clientUdp_test->isRun) {
-        ClientUdp::Msg msg;
-        mainControlBoard->GetInfo_SetTestBoardWorkMode(msg, value);
-        clientUdp_test->Send(msg);
-    }
+//    QString valueStr = ui->lineEdit_testBoard_setWorkMode_value->text();
+//    uint8_t value = valueStr.toLong();
+//    cout << "set workMode:" << to_string(value) << endl;
+//
+//    //set testBoard freq
+//    if (clientUdp_test->isRun) {
+//        ClientUdp::Msg msg;
+//        mainControlBoard->GetInfo_SetTestBoardWorkMode(msg, value);
+//        clientUdp_test->Send(msg);
+//    }
 }
 
 void MainWindow::on_lineEdit_testBoard_setAntMode_value_returnPressed() {
-    QString valueStr = ui->lineEdit_testBoard_setAntMode_value->text();
-    uint8_t value = valueStr.toLong();
-    cout << "set antMode:" << to_string(value) << endl;
-
-    //set testBoard freq
-    if (clientUdp_test->isRun) {
-        ClientUdp::Msg msg;
-        mainControlBoard->GetInfo_SetTestBoardAntMode(msg, value);
-        clientUdp_test->Send(msg);
-    }
+//    QString valueStr = ui->lineEdit_testBoard_setAntMode_value->text();
+//    uint8_t value = valueStr.toLong();
+//    cout << "set antMode:" << to_string(value) << endl;
+//
+//    //set testBoard freq
+//    if (clientUdp_test->isRun) {
+//        ClientUdp::Msg msg;
+//        mainControlBoard->GetInfo_SetTestBoardAntMode(msg, value);
+//        clientUdp_test->Send(msg);
+//    }
 }
 
 void MainWindow::ThreadProcessRecv_ClientUdp_test(void *p) {

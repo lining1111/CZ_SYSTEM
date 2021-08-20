@@ -6,14 +6,11 @@
 #define _MAINWINDOW_H
 
 #include <QWidget>
+#include <QPushButton>
 
 #include "MainControlBoard.h"
 #include "ClientUdp.h"
 #include <thread>
-
-QT_BEGIN_NAMESPACE
-namespace Ui { class MainWindow; }
-QT_END_NAMESPACE
 
 class MainWindow : public QWidget {
 Q_OBJECT
@@ -30,6 +27,7 @@ public:
     MainControlBoard *mainControlBoard = nullptr;
     ClientUdp *clientUdp_test = nullptr;
     std::thread thread_processRecv_ClientUdp_test;
+
     static void ThreadProcessRecv_ClientUdp_test(void *p);
 
 
@@ -39,29 +37,54 @@ public:
     ~MainWindow() override;
 
 private:
-    Ui::MainWindow *ui;
-
+    QPushButton *pushButton_dialog1;//按键按下跳转界面1
+    QPushButton *pushButton_dialog2;//按键按下跳转界面2
+    QPushButton *pushButton_dialog3;//按键按下跳转界面2
+    QPushButton *pushButton_dialog4;//按键按下跳转界面2
 
 public:
 
     int upDownCount = 0;
+
     /**
      * 键盘事件
      * @param event
      */
     void keyPressEvent(QKeyEvent *event);
 
-    signals:
+signals:
+
     void UpdateResult(QString info);
 
 public slots:
+
     void on_UpdateResult(QString info);
 
 public slots:
+
+    /**
+     * 按键1按下
+     */
+    void on_Btn_dialog1_returnPressed();
+    /**
+     * 按键2按下
+     */
+    void on_Btn_dialog2_returnPressed();
+    /**
+     * 按键3按下
+     */
+    void on_Btn_dialog3_returnPressed();
+    /**
+     * 按键4按下
+     */
+    void on_Btn_dialog4_returnPressed();
+
+
     /**
      * 发送频率设置
      */
     void on_lineEdit_testBoard_setFreq_value_returnPressed();
+
     /**
      * 发送衰减设置
      */
