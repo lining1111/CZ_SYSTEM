@@ -24,15 +24,15 @@ MainWindow::MainWindow(QWidget *parent) {
     thread_processRecv_ClientUdp_test = std::thread(ThreadProcessRecv_ClientUdp_test, this);
     thread_processRecv_ClientUdp_test.detach();
 
-    QObject::connect(this, SIGNAL(UpdateResult(QString)), this, SLOT(on_UpdateResult(QString)));
+    connect(this, SIGNAL(UpdateResult(QString)), this, SLOT(on_UpdateResult(QString)));
 
-//    this->setFocusPolicy(Qt::StrongFocus);
+    this->setFocusPolicy(Qt::StrongFocus);
 
     if (this->objectName().isEmpty()) {
         this->setObjectName(QString(windows1_objname));
     }
     this->resize(640, 340);
-    this->setToolTip("test");
+    this->setWindowTitle("test");
 
     //btn1
     pushButton_dialog1 = new QPushButton(this);
@@ -69,13 +69,17 @@ MainWindow::MainWindow(QWidget *parent) {
     setTabOrder(pushButton_dialog1, pushButton_dialog2);
     setTabOrder(pushButton_dialog2, pushButton_dialog3);
     setTabOrder(pushButton_dialog3, pushButton_dialog4);
+    setTabOrder(pushButton_dialog4, pushButton_dialog1);
 }
 
 MainWindow::~MainWindow() {
     delete clientUdp_test;
     delete mainControlBoard;
 
-//    delete ui;
+    delete pushButton_dialog1;
+    delete pushButton_dialog2;
+    delete pushButton_dialog3;
+    delete pushButton_dialog4;
 }
 
 void MainWindow::keyPressEvent(QKeyEvent *event) {
@@ -93,6 +97,22 @@ void MainWindow::keyPressEvent(QKeyEvent *event) {
             this->focusNextChild();
         }
             break;
+        case Qt::Key_Return: {
+            qDebug() << "key enter press" << endl;
+            if (this->pushButton_dialog1->hasFocus()) {
+                qDebug() << "select pushButton_dialog1";
+                emit this->pushButton_dialog1->pressed();
+            } else if (this->pushButton_dialog2->hasFocus()) {
+                qDebug() << "select pushButton_dialog2";
+                emit this->pushButton_dialog2->pressed();
+            } else if (this->pushButton_dialog3->hasFocus()) {
+                qDebug() << "select pushButton_dialog3";
+                emit this->pushButton_dialog3->pressed();
+            } else if (this->pushButton_dialog4->hasFocus()) {
+                qDebug() << "select pushButton_dialog4";
+                emit this->pushButton_dialog4->pressed();
+            }
+        }
         default: {
 
         }
@@ -111,6 +131,10 @@ void MainWindow::on_UpdateResult(QString info) {
 
 void MainWindow::on_Btn_dialog1_returnPressed() {
     qDebug() << "btn_dialog1 pressed";
+    if (dialog1 != nullptr) {
+        dialog1 = new Dialog1(this);
+    }
+    dialog1->show();
 }
 
 void MainWindow::on_Btn_dialog2_returnPressed() {

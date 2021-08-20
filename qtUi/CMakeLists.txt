@@ -20,8 +20,8 @@ find_package(Qt5 COMPONENTS
 include_directories(..)
 include_directories(../background/include)
 
-add_executable(${TargetName} qtUi.cpp MainWindow.cpp MainWindow.h
-        ../background/src/MainControlBoard.cpp)
+add_executable(${TargetName} qtUi.cpp MainWindow.cpp
+        ../background/src/MainControlBoard.cpp dialog1.cpp resource_dialog1.h)
 
 set(LINK_LIBS ${LINK_LIBS}
         Qt5::Core

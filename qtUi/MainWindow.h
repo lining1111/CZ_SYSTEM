@@ -5,6 +5,8 @@
 #ifndef _MAINWINDOW_H
 #define _MAINWINDOW_H
 
+#include "dialog1.h"
+
 #include <QWidget>
 #include <QPushButton>
 
@@ -38,6 +40,7 @@ public:
 
 private:
     QPushButton *pushButton_dialog1;//按键按下跳转界面1
+    Dialog1 *dialog1;
     QPushButton *pushButton_dialog2;//按键按下跳转界面2
     QPushButton *pushButton_dialog3;//按键按下跳转界面2
     QPushButton *pushButton_dialog4;//按键按下跳转界面2
@@ -45,7 +48,7 @@ private:
 public:
 
     int upDownCount = 0;
-
+protected:
     /**
      * 键盘事件
      * @param event
